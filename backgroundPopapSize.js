@@ -1,4 +1,4 @@
-import { insertData } from './insert_text.js';
+//import { insertData } from './insert_text.js';
 
 
 /* chrome.tabs.onActivated.addListener(function(activeInfo) {  
@@ -11,7 +11,7 @@ function chromeTabs(activeInfo) {
     if (Number.isInteger(activeInfo)){
         chrome.tabs.query({active: true, lastFocusedWindow: true}, function(tabs) {
             if (tabs[0].url.startsWith('https://jira.spectr.dev/')){
-                console.log(activeInfo);
+                console.log('tab id:', activeInfo);
                 execScript(activeInfo);
             }
         })
@@ -32,6 +32,9 @@ async function execScript(tabId) {
             console.log(injectionResults)
             for (const {frameId, result} of injectionResults) {
               console.log(`Frame ${frameId} result:`, result);
+              if (result) {
+                workerWithNewElement();  
+              }
             }
         });
 }
@@ -63,8 +66,8 @@ function test(){
                 }
             }
             if (loaded)
-                
                 observer.disconnect();
+                
                 
         });
     });
@@ -72,7 +75,7 @@ function test(){
     var config = { attributes: true, childList: true, characterData: true }
         
     observer.observe(target, config);
-    return 'test()'
+    return true
 
     async function workerWithNewElement() {
         let browserVersion = (await navigator.userAgentData.getHighEntropyValues(["fullVersionList"]))
@@ -93,3 +96,20 @@ function test(){
     
       
 }
+
+async function workerWithNewElement() {
+    let browserVersion = (await navigator.userAgentData.getHighEntropyValues(["fullVersionList"]))
+        .fullVersionList[1].version;
+    chrome.storage.local.set({ Ver: browserVersion });
+
+    let tabId = (await chrome.storage.local.get(['tabId'])).tabId;
+
+    console.log('[workerWithNewElement] tabId', tabId);
+
+    await chrome.scripting.executeScript(
+        {
+            target:{tabId: tabId, allFrames: false},
+            files: ['insert_text.js']
+        }
+    );
+};
