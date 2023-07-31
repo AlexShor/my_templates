@@ -1,0 +1,16 @@
+body {
+    text-align:left;
+    width:400px;
+    height: 400px;
+}
+
+button {
+    width:100px;
+    color:white;
+    background:linear-gradient(#01a9e1, #5bc4bc);
+    border-width:0px;
+    border-radius:5px;
+    padding:5px;
+    font-weight: bold;
+    cursor:pointer;
+}
