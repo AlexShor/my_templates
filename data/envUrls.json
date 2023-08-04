@@ -1,0 +1,8 @@
+
+{
+    "DEV":{
+        "public_url": "https://app.danon.digital-spectr.ru/",
+        "admin_url": "https://adminapp.danon.digital-spectr.ru/",
+        "backend_url": "https://back.danon.digital-spectr.ru/"
+    }
+}

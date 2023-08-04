@@ -1,23 +1,3 @@
-/* function waitForElm(selector) {
-    return new Promise(resolve => {
-        if (document.querySelector(selector)) {
-            return resolve(document.querySelector(selector));
-        }
-
-        const observer = new MutationObserver(mutations => {
-            if (document.querySelector(selector)) {
-                resolve(document.querySelector(selector));
-                observer.disconnect();
-            }
-        });
-
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-    });
-} */
-
 function sleep(ms) {
     return new Promise(
         resolve => setTimeout(resolve, ms)
@@ -36,17 +16,26 @@ async function insertData() {
     const environment_iframe = findByXPATH("//div[@id='environment-wiki-edit']//iframe", document);
     const environment = findByXPATH("//body", environment_iframe.contentDocument);
     
+    //readJSON()
 
-    text = '<p><strong>Браузер:</strong> <br>Google Сhrome ' + browserVersion.Ver + '</p><p><strong>Площадка:</strong><br>DEV - <a href="https://app.danon.digital-spectr.ru/" data-mce-href="https://app.danon.digital-spectr.ru/">https://app.danon.digital-spectr.ru/</a></p>';
+    text = '*Браузер:*\nGoogle Сhrome {{browserVersion}}\n\n*Площадка:*\nDEV - [https://app.danon.digital-spectr.ru/]'
     
+    /* text = `*Браузер:* 
+    Google Сhrome 115.0.5790.102
+    
+    *Площадка:*
+    DEV
+    Публичная часть - [https://dev.jumeforecast.com/] 
+    Бэк - [https://back.jume.dev7.digital-spectr.ru/] ` */
+    
+    text = textToHTML(text, browserVersion.Ver);
+
+    console.log('text>>', text)
+
     if (environment.outerHTML != text){
         await sleep(100);
         environment.innerHTML = text;
     }
-    
-
-    test = '*Браузер:*\nGoogle Сhrome 115.0.5790.102\n\n*Площадка:*\nDEV - [https://app.danon.digital-spectr.ru/]'
-    //textToHTML(test)
 }
 
 function findByXPATH(xpath, doc) {
@@ -55,11 +44,12 @@ function findByXPATH(xpath, doc) {
 
 insertData();
 
-function textToHTML(text) {
+function textToHTML(text, browserVersion='NULL') {
+    console.log('textToHTML()')
     text = '<p>' + text
     text = text.replace('\n\n', '</p><p>')
     text = text.replace(/\n/g, '<br>')
-    
+
     openCloseTag = true
     for (var i = 0; i < text.length; i++){
         letter = text[i]
@@ -76,13 +66,32 @@ function textToHTML(text) {
         }
     }
 
-    for (var i = 0; i < text.length; i++){
-        
+    if (~text.indexOf('[')){
+        var linkInText = text.match(/\[(.*)\]/)[1];
+        console.log('linkInText', linkInText)
+        var aTeg = `<a href="${linkInText}" data-mce-href="${linkInText}">${linkInText}</a>`
+        text = text.replace('[' + linkInText + ']', aTeg);
     }
 
-    text = text + '</p>'
-    console.log(text)
+    if (~text.indexOf('{{browserVersion}}')){
+        var varInText = text.match(/\{\{(.*)\}\}/)[1];
+        text = text.replace('{{' + varInText + '}}', browserVersion);
+    }
+    
 
+    text = text + '</p>'
+    console.log('text', text)
+
+    return text
 }
 
+function readJSON(){
+    console.log('readJSON()')
 
+    readFile = "./data/envUrls.json"
+    
+    var json = require(readFile);
+    console.log(json["DEV"])
+}
+
+//readJSON()
