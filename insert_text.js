@@ -6,8 +6,12 @@ function sleep(ms) {
 
 async function insertData() {
     console.log('insertData()')
+    var env = 'DEV'
+    readJSON()
 
     let browserVersion = await chrome.storage.local.get(['Ver']);
+    let environmentURLs = await chrome.storage.local.get(['EnvURLs']);
+    var carrentEnvUrls = environmentURLs['EnvURLs'][env]
 
     const environment_button1 = findByXPATH("//div[@id='environment-wiki-edit']//button[text()='Визуальный']", document);
     environment_button1.click();    
@@ -15,20 +19,19 @@ async function insertData() {
     await sleep(100);
     const environment_iframe = findByXPATH("//div[@id='environment-wiki-edit']//iframe", document);
     const environment = findByXPATH("//body", environment_iframe.contentDocument);
-    
-    //readJSON()
 
-    text = '*Браузер:*\nGoogle Сhrome {{browserVersion}}\n\n*Площадка:*\nDEV - [https://app.danon.digital-spectr.ru/]'
+    //text = '*Браузер:*\nGoogle Сhrome {{browserVersion}}\n\n*Площадка:*\nDEV - [https://app.danon.digital-spectr.ru/]'
     
-    /* text = `*Браузер:* 
-    Google Сhrome 115.0.5790.102
-    
+    text = `*Браузер:*
+    Google Сhrome {{browserVersion}}
+
     *Площадка:*
     DEV
-    Публичная часть - [https://dev.jumeforecast.com/] 
-    Бэк - [https://back.jume.dev7.digital-spectr.ru/] ` */
+    Публичная часть - [{{public_url}}]
+    Админ-панель - [{{admin_url}}]
+    Бэк - [{{backend_url}}]`
     
-    text = textToHTML(text, browserVersion.Ver);
+    text = textToHTML(text, browserVersion.Ver, carrentEnvUrls);
 
     console.log('text>>', text)
 
@@ -44,7 +47,7 @@ function findByXPATH(xpath, doc) {
 
 insertData();
 
-function textToHTML(text, browserVersion='NULL') {
+function textToHTML(text, browserVersion, carrentEnvUrls) {
     console.log('textToHTML()')
     text = '<p>' + text
     text = text.replace('\n\n', '</p><p>')
@@ -65,33 +68,51 @@ function textToHTML(text, browserVersion='NULL') {
             text = text.substr(0, i) + tag + text.substr(i + 1);
         }
     }
+    
+    if (~text.indexOf('{{browserVersion}}')){
+        text = text.replace('{{browserVersion}}', browserVersion);
+    }
+    
+    if (~text.indexOf('{{public_url}}')){
+        text = text.replace('{{public_url}}', carrentEnvUrls.public_url);
+    }
 
-    if (~text.indexOf('[')){
-        var linkInText = text.match(/\[(.*)\]/)[1];
-        console.log('linkInText', linkInText)
+    if (~text.indexOf('{{admin_url}}')){
+        text = text.replace('{{admin_url}}', carrentEnvUrls.admin_url);
+    }
+
+    if (~text.indexOf('{{backend_url}}')){
+        text = text.replace('{{backend_url}}', carrentEnvUrls.backend_url);
+    }
+
+    var linkCount = text.match(/\[/g).length
+    for (var i=0; i < linkCount; i++){
+        linkInText = text.slice(text.indexOf('[')+1, text.indexOf(']'))
         var aTeg = `<a href="${linkInText}" data-mce-href="${linkInText}">${linkInText}</a>`
         text = text.replace('[' + linkInText + ']', aTeg);
     }
 
-    if (~text.indexOf('{{browserVersion}}')){
-        var varInText = text.match(/\{\{(.*)\}\}/)[1];
-        text = text.replace('{{' + varInText + '}}', browserVersion);
-    }
-    
-
     text = text + '</p>'
-    console.log('text', text)
-
     return text
 }
 
 function readJSON(){
     console.log('readJSON()')
+    url = chrome.runtime.getURL('data/envUrls.json');
 
-    readFile = "./data/envUrls.json"
+    async function get_score() {
+        try {
+            const response = await fetch(url);
+            const result = await response.json();
+            return result;
+        }
+        catch(error) {
+            console.log(error);
+        }
+    };
     
-    var json = require(readFile);
-    console.log(json["DEV"])
+    return (async function() {
+        const getScore = await get_score();
+        chrome.storage.local.set({ EnvURLs: getScore });
+    })();
 }
-
-//readJSON()

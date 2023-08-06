@@ -1,6 +1,3 @@
-//import { insertData } from './insert_text.js';
-
-
 chrome.tabs.onActivated.addListener(function(activeInfo) {  
     chromeTabs(activeInfo.tabId)});
 
@@ -26,22 +23,18 @@ async function execScript(tabId) {
     chrome.storage.local.set({ tabId: tabId });
     chrome.scripting.executeScript({
             target:{tabId: tabId, allFrames: false},
-            func: test
+            func: observer
         })
         .then(injectionResults => {
-            //console.log(injectionResults)
             for (const {frameId, result} of injectionResults) {
-              //console.log(`Frame ${frameId} result:`, result);
               if (result) {
-                readJSON()
                 workerWithNewElement();  
               }
             }
         });
 }
 
-function test(){
-    //console.log('test()')
+function observer(){
     
     var loaded = false;
 
@@ -59,16 +52,12 @@ function test(){
             for (var i = mutation.addedNodes.length; i--;) {
                 if (mutation.addedNodes[i].id == innerElement) {
                     console.log('mutation', mutation);
-                    //workerWithNewElement();
                     loaded = true;
-
                     break;
                 }
             }
             if (loaded)
                 observer.disconnect();
-                
-                
         });
     });
     
@@ -76,29 +65,13 @@ function test(){
         
     observer.observe(target, config);
     return true
-
-    /* async function workerWithNewElement() {
-        let browserVersion = (await navigator.userAgentData.getHighEntropyValues(["fullVersionList"]))
-            .fullVersionList[1].version;
-        chrome.storage.local.set({ Ver: browserVersion });
-
-        let tabId = (await chrome.storage.local.get(['tabId'])).tabId;
-
-        console.log('tabId', tabId);
-    }; */
-    
-      
 }
 
 async function workerWithNewElement() {
     let browserVersion = (await navigator.userAgentData.getHighEntropyValues(["fullVersionList"]))
         .fullVersionList[1].version;
     chrome.storage.local.set({ Ver: browserVersion });
-
     let tabId = (await chrome.storage.local.get(['tabId'])).tabId;
-
-    //console.log('[workerWithNewElement] tabId', tabId);
-
     await chrome.scripting.executeScript(
         {
             target:{tabId: tabId, allFrames: false},
@@ -106,18 +79,3 @@ async function workerWithNewElement() {
         }
     );
 };
-
-function readJSON(){
-    console.log('readJSON()')
-
-    /* url = chrome.runtime.getURL('./data/envUrls.json');
-
-    fetch(url)
-    .then((response) => response.json()) // file contains json
-    .then((json) => console.log(json));  */
-
-    readFile = "./data/envUrls.json"
-    
-    var json = require(readFile);
-    console.log(json["DEV"])
-}
