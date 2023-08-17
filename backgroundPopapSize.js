@@ -16,7 +16,6 @@ function chromeTabs(activeInfo) {
     else{
         console.log('activeInfo: ', activeInfo);
     }
-    
 }
 
 async function execScript(tabId) {

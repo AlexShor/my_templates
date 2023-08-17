@@ -1,0 +1,5 @@
+
+{
+    "environment": "*Браузер:*\nGoogle Сhrome {{browserVersion}}\n\n*Площадка:*\nDEV\nПубличная часть - [{{public_url}}]\nАдмин-панель - [{{admin_url}}]\nБэк - [{{backend_url}}]",
+    "description": "*Предварительные условия:*\n\n\n*Шаги воспроизведения:*\n#\n\n*Фактический результат:*\n\n\n*Ожидаемый результат:*\n\n"
+}
