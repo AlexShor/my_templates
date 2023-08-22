@@ -7,12 +7,22 @@ function sleep(ms) {
 async function insertData() {
 
     var env = 'DEV'
+    var project = 'jume'
     let browserVersion = await chrome.storage.local.get(['Ver']);
+
+    components_select = findByXPATH("//div[@id='components-multi-select']//textarea", document)
+    components_text = findByXPATH("//span[@id='components-val']", document).textContent.trim()
+    if (components_select.getAttribute("aria-label") == null && components_text != "Не заполнено") {
+        components_select.value = components_text
+        findByXPATH("//div[@id='components-multi-select']//span", document).click();
+        await sleep(100);
+        findByXPATH("//a[@class='aui-list-item-link']", document).click();
+    }
 
     const environment_button1 = findByXPATH("//div[@id='environment-wiki-edit']//button[text()='Визуальный']", document);
     environment_button1.click();    
 
-    await sleep(100);
+    await sleep(200);
     const environment_iframe = findByXPATH("//div[@id='environment-wiki-edit']//iframe", document);
     const environment = findByXPATH("//body", environment_iframe.contentDocument);
     const textareaEnvironment = findByXPATH("//textarea[@id='environment']", document);
@@ -27,13 +37,13 @@ async function insertData() {
     defaultTag = '<p><br data-mce-bogus="1"></p>'
     await sleep(100);
     if (environment.outerHTML.includes(defaultTag)){
-        readJSON('data/envUrls.json', 'testName').then((envUrls) => {
-            readJSON('data/saveData.json', 'testName').then((saveData) => {
+        readJSON('data/envUrls.json').then((envUrls) => {
+            readJSON('data/saveData.json').then((saveData) => {
                 var environmentText = saveData.environment
                 var descriptionText = saveData.description
 
-                environment.innerHTML = textToHTML(environmentText, browserVersion.Ver, envUrls[env])
-                description.innerHTML = textToHTML(descriptionText, browserVersion.Ver, envUrls[env])
+                environment.innerHTML = textToHTML(environmentText, browserVersion.Ver, envUrls[project][env])
+                description.innerHTML = textToHTML(descriptionText, browserVersion.Ver, envUrls[project][env])
 
                 textareaEnvironment.setAttribute("value", environmentText);
                 textareaEnvironment.setAttribute("originalvalue", environmentText);
@@ -107,7 +117,6 @@ function textToHTML(text, browserVersion, carrentEnvUrls) {
 }
 
 function readJSON(url){
-    console.log('readJSON2()')
     url = chrome.runtime.getURL(url);
 
     async function get_score() {
@@ -125,5 +134,4 @@ function readJSON(url){
         const getScore = await get_score();
         return getScore
     })();
-    
 }
