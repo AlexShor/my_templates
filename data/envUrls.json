@@ -1,14 +1,14 @@
 
 {
     "danone":{
-        "DEV":{
+        "dev":{
             "public_url": "https://app.danon.digital-spectr.ru/",
             "admin_url": "https://adminapp.danon.digital-spectr.ru/",
             "backend_url": "https://back.danon.digital-spectr.ru/"
         }
     },
     "jume":{
-        "DEV":{
+        "dev":{
             "public_url": "https://dev.jumeforecast.com/",
             "admin_url": "https://adminapp.dev.jumeforecast.com/",
             "backend_url": "https://back.jume.dev7.digital-spectr.ru/"

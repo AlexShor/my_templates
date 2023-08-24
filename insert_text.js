@@ -6,8 +6,6 @@ function sleep(ms) {
 
 async function insertData() {
 
-    var env = 'DEV'
-    var project = 'jume'
     let browserVersion = await chrome.storage.local.get(['Ver']);
 
     components_select = findByXPATH("//div[@id='components-multi-select']//textarea", document)
@@ -36,24 +34,45 @@ async function insertData() {
 
     defaultTag = '<p><br data-mce-bogus="1"></p>'
     await sleep(100);
-    if (environment.outerHTML.includes(defaultTag)){
-        readJSON('data/envUrls.json').then((envUrls) => {
-            readJSON('data/saveData.json').then((saveData) => {
-                var environmentText = saveData.environment
-                var descriptionText = saveData.description
+    
 
-                environment.innerHTML = textToHTML(environmentText, browserVersion.Ver, envUrls[project][env])
-                description.innerHTML = textToHTML(descriptionText, browserVersion.Ver, envUrls[project][env])
+    chrome.storage.sync.get(['radioEnvBtns', 'radioPrjBtns'], function(items) {
+        var radioEnvBtns = items.radioEnvBtns
+        var radioPrjBtns = items.radioPrjBtns
+        
+        var env = 'dev'
+        var project = 'jume'
 
-                textareaEnvironment.setAttribute("value", environmentText);
-                textareaEnvironment.setAttribute("originalvalue", environmentText);
+        for (var key in radioEnvBtns) {
+            if (radioEnvBtns[key] == true){
+                env = key.split('_')[2]
+            }
+        }
+        for (var key in radioPrjBtns) {
+            if (radioPrjBtns[key] == true){
+                project = key.split('_')[2]
+            }
+        }
+    
+        if (environment.outerHTML.includes(defaultTag)){
+            readJSON('data/envUrls.json').then((envUrls) => {
+                readJSON('data/saveData.json').then((saveData) => {
+                    var environmentText = saveData.environment
+                    var descriptionText = saveData.description
+                    
+                    environment.innerHTML = textToHTML(environmentText, browserVersion.Ver, envUrls[project][env])
+                    description.innerHTML = textToHTML(descriptionText, browserVersion.Ver, envUrls[project][env])
 
-                textareaDescription.setAttribute("value", descriptionText);
-                textareaDescription.setAttribute("originalvalue", descriptionText);
+                    textareaEnvironment.setAttribute("value", environmentText);
+                    textareaEnvironment.setAttribute("originalvalue", environmentText);
+
+                    textareaDescription.setAttribute("value", descriptionText);
+                    textareaDescription.setAttribute("originalvalue", descriptionText);
+                })
+                
             })
-            
-        })
-    }
+        }
+    });
 }
 
 function findByXPATH(xpath, doc) {

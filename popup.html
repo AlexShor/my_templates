@@ -10,50 +10,49 @@
     <body>
         <h1>My templates</h1>
         <div>
-            <table border="1">
+            <table class="main-table">
                 <tr>
-                    <td><textarea id="myTextarea"></textarea></td>
-                    <td>
-                        <table border="1">
+                    <td class="main-table"><textarea id="myTextarea"></textarea></td>
+                    <td class="main-table main-table-option-td">
+                        <table class="inner-table">
                             <tr>
-                                <td>
+                                <td class="inner-table">
                                     <input type="radio" id="radio_inv_dev" name="radio_environment" checked />
                                     <label for="radio_inv_dev">DEV</label>
                                 </td>
                             </tr>
                             <tr>
-                                <td>
+                                <td class="inner-table">
                                     <input type="radio" id="radio_inv_stage" name="radio_environment"/>
                                     <label for="radio_inv_stage">STAGE</label>
                                 </td>
                             </tr>
                             <tr>
-                                <td>
+                                <td class="inner-table">
                                     <input type="radio" id="radio_inv_prod" name="radio_environment"/>
                                     <label for="radio_inv_prod">PROD</label>
                                 </td>
                             </tr>
                           </table>
                     </td>
-                    <td>
-                        <table border="1">
+                    <td class="main-table main-table-option-td">
+                        <table class="inner-table">
                             <tr>
-                                <td>
+                                <td class="inner-table">
                                     <input type="radio" id="radio_project_danone" name="radio_project" checked />
                                     <label for="radio_project_danone">DANONE</label>
                                 </td>
                             </tr>
                             <tr>
-                                <td>
+                                <td class="inner-table">
                                     <input type="radio" id="radio_project_jume" name="radio_project"/>
                                     <label for="radio_project_jume">JUME</label>
                                 </td>
                             </tr>
                             <tr>
-                                <td>
+                                <td class="inner-table">
                                     <button id="apply">apply</button>
-                                    <!-- <button id="grabBtn">Insert environment</button> -->
-                                    <script src="popup.js" charset="utf-8"></script>
+                                    <script src="popup.js" type="module" charset="utf-8"></script>
                                 </td>
                             </tr>
                           </table>

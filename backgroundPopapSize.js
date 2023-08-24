@@ -67,8 +67,17 @@ function observer(){
 }
 
 async function workerWithNewElement() {
-    let browserVersion = (await navigator.userAgentData.getHighEntropyValues(["fullVersionList"]))
-        .fullVersionList[1].version;
+    let fullVersionList = (await navigator.userAgentData.getHighEntropyValues(["fullVersionList"]))
+        .fullVersionList;
+
+    var browserVersion
+
+    for (var i in fullVersionList){
+        if (fullVersionList[i].brand == "Google Chrome"){
+            browserVersion = fullVersionList[i].version
+        }
+    }
+
     chrome.storage.local.set({ Ver: browserVersion });
     let tabId = (await chrome.storage.local.get(['tabId'])).tabId;
     await chrome.scripting.executeScript(

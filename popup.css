@@ -5,12 +5,54 @@ body {
 }
 
 button {
-    width:100px;
-    color:white;
-    background:linear-gradient(#01a9e1, #5bc4bc);
+    width:100%;
+    height: 20px;
+    padding: 1px;
+    /* color:cadetblue; */
+    background-color: rgba(81, 142, 255, 0.945);
     border-width:0px;
-    border-radius:5px;
-    padding:5px;
+    border-radius:1px;
     font-weight: bold;
     cursor:pointer;
 }
+
+label, input {
+    font-weight: bold;
+    cursor:pointer;
+}
+
+table.main-table {
+    border: 1px solid;
+    vertical-align: top;
+    width: 100%;
+}
+
+td.main-table-option-td {
+    min-width: 100px;
+    width: 100px;
+}
+
+td.main-table {
+    vertical-align: top;
+    border: 1px solid;
+    padding: 5px 5px;
+}
+
+table.inner-table {
+    border: 1px solid;
+    vertical-align: top;
+    width: 100;
+}
+
+td.inner-table {
+    vertical-align: top;
+    border: 1px solid;
+    min-width: 100px;
+    height: 20px;
+}
+
+textarea {
+    width: 100%;
+    height: 100%;
+}
+  
