@@ -30,7 +30,9 @@ async function insertData() {
     const textareaDescription = findByXPATH("//textarea[@id='description']", document);
 
     const createSubtaskDialog = findByXPATH('//section[@id="create-subtask-dialog"]', document);
-    createSubtaskDialog.setAttribute('style', "z-index: 3000; width: 1500px; bottom: 50px; top: 50px");
+    createSubtaskDialog.setAttribute('style', "z-index: 3000; width: 1500px; top: 15px");
+    const jiraDialogCoreContent = findByXPATH('//div[contains(@class, "aui-dialog2-content")]', document);
+    jiraDialogCoreContent.setAttribute('style', "max-height: 85vh");
 
     defaultTag = '<p><br data-mce-bogus="1"></p>'
     await sleep(100);
